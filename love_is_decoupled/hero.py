@@ -8,9 +8,10 @@ class Hero:
 
     _partner: Optional[Partner] = None
 
-    def __init__(self, name: str, interests: List[str]):
+    def __init__(self, name: str, interests: List[str], partner: Optional[Partner] = None):
         self.name = name
         self.interests = interests
+        self._partner = partner
 
     @property
     def partner(self):
@@ -55,8 +56,7 @@ class Hero:
         Returns:
             bool: If the Hero should find a new partner
         """
-        partner_priorities = self.partner.list_priorities()
-        return HERO not in partner_priorities
+        return HERO not in self._get_partner_priorities()
 
     def _check_partner(self):
         return self.partner.communicate()
@@ -65,7 +65,7 @@ class Hero:
         partner_priorities = self.partner.list_priorities()
         if not partner_priorities:
             return set()
-        return set(self.partner.list_priorities())
+        return set(partner_priorities)
 
     def _construct_life_plan(self, partner_priorities: Set[str]) -> Dict[str, int]:
         return {
@@ -73,5 +73,7 @@ class Hero:
             for interest in self.interests
         }
 
-    def _value_interest_for_life_plan(self, interest: str, partner_priorities: Set[str]):
+    def _value_interest_for_life_plan(
+        self, interest: str, partner_priorities: Set[str]
+    ):
         return 2 if interest in partner_priorities else 1
