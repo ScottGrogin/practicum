@@ -47,8 +47,9 @@ def test_hero_get_wellness_communicative_partner():
         - the method should return Wellness.JUST_FINE
     """
     # Given
-    hero = Hero(name="Pat", interests=["doesn't matter"])
-    hero._partner = MockPartner(None, True)
+    hero = Hero(
+        name="Pat", interests=["doesn't matter"], partner=MockPartner(None, True)
+    )
 
     # When
     wellness = hero.get_wellness()
@@ -70,8 +71,9 @@ def test_hero_get_wellness_non_communicative_partner():
         - the method should return Wellness.UNHEALTHY
     """
     # Given
-    hero = Hero(name="Kayleigh", interests=["Everything"])
-    hero._partner = MockPartner(None, False)
+    hero = Hero(
+        name="Kayleigh", interests=["Everything"], partner=MockPartner(None, False)
+    )
 
     # When
     wellness = hero.get_wellness()
@@ -93,8 +95,12 @@ def test_hero_get_life_plan_no_overlapping_interests():
         - the method should return a dictionary with the interests as keys and the value as 1
     """
     # Given
-    hero = Hero(name="Vic", interests=["entrepreneurship", "helping others"])
-    hero._partner = MockPartner(["Theft","Giving people weird looks"], True)
+    hero = Hero(
+        name="Vic",
+        interests=["entrepreneurship", "helping others"],
+        partner=MockPartner(["Theft", "Giving people weird looks"], True),
+    )
+
     # When
     life_plan = hero.get_life_plan()
 
@@ -119,8 +125,8 @@ def test_hero_get_life_plan_overlapping_interests():
     hero = Hero(
         name="Luna",
         interests=["Watching paint dry", "Bugs", "Delinquency", "Eating light bulbs"],
+        partner=MockPartner(["Bugs", "Eating light bulbs"], True),
     )
-    hero._partner = MockPartner(["Bugs", "Eating light bulbs"], True)
 
     # When
     life_plan = hero.get_life_plan()
@@ -147,8 +153,11 @@ def test_hero_should_find_new_partner_prioritizing():
         - the method should return False
     """
     # Given
-    hero = Hero(name="Tracy", interests=["vaping", "Jean-Claude Van Damme"])
-    hero._partner = MockPartner([HERO,HERO,HERO,HERO,HERO,"HERO!!!"], True)
+    hero = Hero(
+        name="Tracy",
+        interests=["vaping", "Jean-Claude Van Damme"],
+        partner=MockPartner([HERO, HERO, HERO, HERO, HERO, "HERO!!!"], True),
+    )
 
     # When
     should_find_new_partner = hero.should_find_new_partner()
@@ -170,8 +179,11 @@ def test_hero_should_find_new_partner_not_prioritizing():
         - the method should return True
     """
     # Given
-    hero = Hero(name="Abcde", interests=["Rocks", "Papers", "Scissors"])
-    hero._partner = MockPartner(["Staring into the void"], True)
+    hero = Hero(
+        name="Abcde",
+        interests=["Rocks", "Papers", "Scissors"],
+        partner=MockPartner(None, True),
+    )
 
     # When
     should_find_new_partner = hero.should_find_new_partner()
