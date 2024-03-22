@@ -18,6 +18,8 @@ But I am finding it really hard to do so.
 I'd also like to clean-codeify Hero, but without tests in place, that would be
 irresponsible.
 """
+
+
 class MockPartner:
     def __init__(self, priorities=None, communicates=True):
         self.priorities = priorities
@@ -32,20 +34,21 @@ class MockPartner:
         return None
 
 
-def test_hero_get_wellness():
+def test_hero_get_wellness_communicative_partner():
     """
     Given:
         - a Hero instance
+        - a communicative partner
 
     When:
         - the get_wellness method is called
 
     Then:
-        - the method should return Wellness.FAIR
+        - the method should return Wellness.JUST_FINE
     """
     # Given
     hero = Hero(name="Pat", interests=["doesn't matter"])
-    hero._partner = MockPartner(None,True)
+    hero._partner = MockPartner(None, True)
 
     # When
     wellness = hero.get_wellness()
@@ -54,7 +57,30 @@ def test_hero_get_wellness():
     assert wellness == Wellness.JUST_FINE
 
 
-def test_hero_get_life_plan():
+def test_hero_get_wellness_non_communicative_partner():
+    """
+    Given:
+        - a Hero instance
+        - a non-communicative partner
+
+    When:
+        - the get_wellness method is called
+
+    Then:
+        - the method should return Wellness.UNHEALTHY
+    """
+    # Given
+    hero = Hero(name="Kayleigh", interests=["Everything"])
+    hero._partner = MockPartner(None, False)
+
+    # When
+    wellness = hero.get_wellness()
+
+    # Then
+    assert wellness == Wellness.UNHEALTHY
+
+
+def test_hero_get_life_plan_no_overlapping_interests():
     """
     Given:
         - a Hero instance
@@ -68,7 +94,7 @@ def test_hero_get_life_plan():
     """
     # Given
     hero = Hero(name="Vic", interests=["entrepreneurship", "helping others"])
-    hero._partner = MockPartner(None,True)
+    hero._partner = MockPartner(["Theft","Giving people weird looks"], True)
     # When
     life_plan = hero.get_life_plan()
 
@@ -76,11 +102,43 @@ def test_hero_get_life_plan():
     assert life_plan == {"entrepreneurship": 1, "helping others": 1}
 
 
-def test_hero_should_find_new_partner():
+def test_hero_get_life_plan_overlapping_interests():
     """
     Given:
         - a Hero instance
-        - a Partner with HERO in its list of priorities
+        - a Partner that has overlapping interests with the Hero
+
+    When:
+        - the get_life_plan method is called
+
+    Then:
+        - the method should return a dictionary with the interests as keys and the value as 2
+        for each overlapping interest and 1 otherwise.
+    """
+    # Given
+    hero = Hero(
+        name="Luna",
+        interests=["Watching paint dry", "Bugs", "Delinquency", "Eating light bulbs"],
+    )
+    hero._partner = MockPartner(["Bugs", "Eating light bulbs"], True)
+
+    # When
+    life_plan = hero.get_life_plan()
+
+    # Then
+    assert life_plan == {
+        "Bugs": 2,
+        "Eating light bulbs": 2,
+        "Delinquency": 1,
+        "Watching paint dry": 1,
+    }
+
+
+def test_hero_should_find_new_partner_prioritizing():
+    """
+    Given:
+        - a Hero instance
+        - a Partner with HERO in their list of priorities
 
     When:
         - the should_find_new_partner method is called
@@ -90,9 +148,33 @@ def test_hero_should_find_new_partner():
     """
     # Given
     hero = Hero(name="Tracy", interests=["vaping", "Jean-Claude Van Damme"])
-    hero._partner = MockPartner([HERO],True)
+    hero._partner = MockPartner([HERO,HERO,HERO,HERO,HERO,"HERO!!!"], True)
+
     # When
     should_find_new_partner = hero.should_find_new_partner()
 
     # Then
     assert should_find_new_partner is False
+
+
+def test_hero_should_find_new_partner_not_prioritizing():
+    """
+    Given:
+        - a Hero instance
+        - a Partner without HERO in their list of priorities
+
+    When:
+        - the should_find_new_partner method is called
+
+    Then:
+        - the method should return True
+    """
+    # Given
+    hero = Hero(name="Abcde", interests=["Rocks", "Papers", "Scissors"])
+    hero._partner = MockPartner(["Staring into the void"], True)
+
+    # When
+    should_find_new_partner = hero.should_find_new_partner()
+
+    # Then
+    assert should_find_new_partner is True
