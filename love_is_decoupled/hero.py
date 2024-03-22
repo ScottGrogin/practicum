@@ -8,7 +8,9 @@ class Hero:
 
     _partner: Optional[Partner] = None
 
-    def __init__(self, name: str, interests: List[str], partner: Optional[Partner] = None):
+    def __init__(
+        self, name: str, interests: List[str], partner: Optional[Partner] = None
+    ):
         self.name = name
         self.interests = interests
         self._partner = partner
