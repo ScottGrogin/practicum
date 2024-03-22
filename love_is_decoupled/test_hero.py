@@ -1,6 +1,6 @@
 from .hero import Hero
 from .wellness import Wellness
-
+from .partner import HERO
 
 """
 Geezum creepers, I am finding it really hard to validate the expected behaviors
@@ -11,13 +11,25 @@ and its making it a real pain to continue to develop the Hero.
 
 There are a couple of cases that I'd like to test, but its just so painful.
 
-Right now there is a lot of beahvior that I'd like to test in the three public
+Right now there is a lot of behavior that I'd like to test in the three public
 methods (get_wellness, get_life_plan, should_find_new_partner) of the Hero class.
 But I am finding it really hard to do so.
 
 I'd also like to clean-codeify Hero, but without tests in place, that would be
 irresponsible.
 """
+class MockPartner:
+    def __init__(self, priorities=None, communicates=True):
+        self.priorities = priorities
+        self.communicates = communicates
+
+    def list_priorities(self):
+        return self.priorities
+
+    def communicate(self):
+        if self.communicates:
+            return "Howdy Partner!"
+        return None
 
 
 def test_hero_get_wellness():
@@ -33,6 +45,7 @@ def test_hero_get_wellness():
     """
     # Given
     hero = Hero(name="Pat", interests=["doesn't matter"])
+    hero._partner = MockPartner(None,True)
 
     # When
     wellness = hero.get_wellness()
@@ -55,7 +68,7 @@ def test_hero_get_life_plan():
     """
     # Given
     hero = Hero(name="Vic", interests=["entrepreneurship", "helping others"])
-
+    hero._partner = MockPartner(None,True)
     # When
     life_plan = hero.get_life_plan()
 
@@ -77,7 +90,7 @@ def test_hero_should_find_new_partner():
     """
     # Given
     hero = Hero(name="Tracy", interests=["vaping", "Jean-Claude Van Damme"])
-
+    hero._partner = MockPartner([HERO],True)
     # When
     should_find_new_partner = hero.should_find_new_partner()
 
