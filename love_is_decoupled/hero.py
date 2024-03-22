@@ -31,8 +31,7 @@ class Hero:
         Returns:
             Literal[Wellness.JUST_FINE, Wellness.UNHEALTHY]: How the hero is doing
         """
-        communincation = self._check_partner()
-        if communincation is None:
+        if self._check_partner_communication() is None:
             return Wellness.UNHEALTHY
         return Wellness.JUST_FINE
 
@@ -60,7 +59,7 @@ class Hero:
         """
         return HERO not in self._get_partner_priorities()
 
-    def _check_partner(self):
+    def _check_partner_communication(self):
         return self.partner.communicate()
 
     def _get_partner_priorities(self) -> Set[str]:

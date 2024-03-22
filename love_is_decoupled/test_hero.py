@@ -97,7 +97,7 @@ def test_hero_get_life_plan_no_overlapping_interests():
     # Given
     hero = Hero(
         name="Vic",
-        interests=["entrepreneurship", "helping others"],
+        interests=["entrepreneurship", "helping others", "helping others"],
         partner=MockPartner(["Theft", "Giving people weird looks"], True),
     )
 
@@ -105,7 +105,11 @@ def test_hero_get_life_plan_no_overlapping_interests():
     life_plan = hero.get_life_plan()
 
     # Then
-    assert life_plan == {"entrepreneurship": 1, "helping others": 1}
+    assert life_plan == {
+        "entrepreneurship": 1,
+        "helping others": 1,
+        "helping others": 1,
+    }
 
 
 def test_hero_get_life_plan_overlapping_interests():
