@@ -6,20 +6,12 @@ from .wellness import Wellness
 
 class Hero:
 
-    _partner: Optional[Partner] = None
-
     def __init__(
         self, name: str, interests: List[str], partner: Optional[Partner] = None
     ):
         self.name = name
         self.interests = interests
         self._partner = partner
-
-    @property
-    def partner(self):
-        if not self._partner:
-            self._partner = Partner()
-        return self._partner
 
     def get_wellness(self) -> Literal[Wellness.JUST_FINE, Wellness.UNHEALTHY]:
         """See how well the Hero is doing. The Hero will first check in
@@ -60,10 +52,10 @@ class Hero:
         return HERO not in self._get_partner_priorities()
 
     def _check_partner_communication(self):
-        return self.partner.communicate()
+        return self._partner.communicate()
 
     def _get_partner_priorities(self) -> Set[str]:
-        partner_priorities = self.partner.list_priorities()
+        partner_priorities = self._partner.list_priorities()
         if not partner_priorities:
             return set()
         return set(partner_priorities)
