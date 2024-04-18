@@ -1,6 +1,12 @@
 from .hero import Hero
 from .wellness import Wellness
 from .partner import HERO
+from .relationship_functions import (
+    get_wellness,
+    get_life_plan,
+    should_find_new_partner,
+    get_new_partner,
+)
 
 """
 Geezum creepers, I am finding it really hard to validate the expected behaviors
@@ -52,7 +58,7 @@ def test_hero_get_wellness_communicative_partner():
     )
 
     # When
-    wellness = hero.get_wellness()
+    wellness = get_wellness(hero.partner)
 
     # Then
     assert wellness == Wellness.JUST_FINE
@@ -76,7 +82,7 @@ def test_hero_get_wellness_non_communicative_partner():
     )
 
     # When
-    wellness = hero.get_wellness()
+    wellness = get_wellness(hero.partner)
 
     # Then
     assert wellness == Wellness.UNHEALTHY
@@ -102,7 +108,7 @@ def test_hero_get_life_plan_no_overlapping_interests():
     )
 
     # When
-    life_plan = hero.get_life_plan()
+    life_plan = get_life_plan(hero)
 
     # Then
     assert life_plan == {
@@ -133,7 +139,7 @@ def test_hero_get_life_plan_overlapping_interests():
     )
 
     # When
-    life_plan = hero.get_life_plan()
+    life_plan = get_life_plan(hero)
 
     # Then
     assert life_plan == {
@@ -164,10 +170,10 @@ def test_hero_should_find_new_partner_prioritizing():
     )
 
     # When
-    should_find_new_partner = hero.should_find_new_partner()
+    find_new_partner = should_find_new_partner(hero.partner, HERO)
 
     # Then
-    assert should_find_new_partner is False
+    assert find_new_partner is False
 
 
 def test_hero_should_find_new_partner_not_prioritizing():
@@ -190,7 +196,33 @@ def test_hero_should_find_new_partner_not_prioritizing():
     )
 
     # When
-    should_find_new_partner = hero.should_find_new_partner()
+    find_new_partner = should_find_new_partner(hero.partner, HERO)
 
     # Then
-    assert should_find_new_partner is True
+    assert find_new_partner is True
+
+
+def test_hero_get_new_partner():
+    """
+    Given:
+        - a Hero instance
+
+    When:
+        - the get_new_partner method is called
+
+    Then:
+        - the hero should get a new partner
+    """
+    # Given
+    hero = Hero(
+        name="Eve",
+        interests=["Apples", "Knowledge"],
+        partner=MockPartner(None, True),
+    )
+    current_partner = hero.partner
+
+    # When
+    new_partner = get_new_partner(hero)
+
+    # Then
+    assert new_partner != current_partner
