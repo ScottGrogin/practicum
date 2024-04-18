@@ -23,7 +23,7 @@ class Hero:
         Returns:
             Literal[Wellness.JUST_FINE, Wellness.UNHEALTHY]: How the hero is doing
         """
-        if self._check_partner_communication() is None:
+        if self._partner.communicate() is None:
             return Wellness.UNHEALTHY
         return Wellness.JUST_FINE
 
@@ -50,9 +50,6 @@ class Hero:
             bool: If the Hero should find a new partner
         """
         return HERO not in self._get_partner_priorities()
-
-    def _check_partner_communication(self):
-        return self._partner.communicate()
 
     def _get_partner_priorities(self) -> Set[str]:
         partner_priorities = self._partner.list_priorities()
